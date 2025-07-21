@@ -1,42 +1,109 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { auth } from "../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import Logo from "../components/Logo";
 
 export default function Features() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <Link to="/" className="text-xl font-bold text-blue-600">
-              QRGen
+          <div className="flex justify-between items-center py-4 lg:py-6">
+            <Link to="/" className="flex items-center group">
+              <div className="transform group-hover:scale-105 transition-transform duration-200">
+                <Logo />
+              </div>
             </Link>
-            <nav className="hidden md:flex space-x-8">
-              <Link to="/features" className="text-blue-600 font-medium">
+            <nav className="hidden md:flex space-x-8 items-center">
+              <Link
+                to="/features"
+                className="text-blue-600 font-medium transition-colors duration-200 relative group"
+              >
                 Features
-              </Link>
-              <Link to="/pricing" className="text-gray-700 hover:text-blue-600">
-                Pricing
-              </Link>
-              <Link to="/login" className="text-gray-700 hover:text-blue-600">
-                Login
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-100 transition-transform duration-200"></span>
               </Link>
               <Link
-                to="/signup"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                to="/pricing"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
               >
-                Sign Up
+                Pricing
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
               </Link>
+              {user ? (
+                // Authenticated user navigation
+                <div className="flex items-center space-x-6">
+                  <Link
+                    to="/dashboard"
+                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                  >
+                    Dashboard
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                  </Link>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {(user.displayName || user.email || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-gray-700 font-medium max-w-32 truncate">
+                      {user.displayName || user.email}
+                    </span>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-gray-500 hover:text-red-600 transition-colors duration-200 font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // Non-authenticated user navigation
+                <div className="flex items-center space-x-4">
+                  <Link
+                    to="/login"
+                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </nav>
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden focus:outline-none"
+              className="md:hidden focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
               onClick={() => setMenuOpen(!menuOpen)}
             >
               <svg
-                className="w-6 h-6"
+                className="w-6 h-6 text-gray-700"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -59,38 +126,115 @@ export default function Features() {
 
       {/* Mobile Nav Dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-white shadow-md py-4 px-6 text-center space-y-4 border-t">
-          <Link to="/features" className="block text-blue-600 font-medium">
+        <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-lg py-6 px-6 text-center space-y-6 border-t border-gray-100 animate-in slide-in-from-top duration-200">
+          <Link
+            to="/features"
+            className="block text-blue-600 font-medium py-2 transition-colors duration-200"
+            onClick={() => setMenuOpen(false)}
+          >
             Features
           </Link>
           <Link
             to="/pricing"
-            className="block text-gray-700 hover:text-blue-600"
+            className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+            onClick={() => setMenuOpen(false)}
           >
             Pricing
           </Link>
-          <Link to="/login" className="block text-gray-700 hover:text-blue-600">
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >
-            Sign Up
-          </Link>
+          {user ? (
+            // Authenticated user mobile navigation
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <Link
+                to="/dashboard"
+                className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+                onClick={() => setMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <div className="flex items-center justify-center space-x-3 py-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">
+                    {(user.displayName || user.email || "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-gray-700 font-medium">
+                  {user.displayName || user.email}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  handleSignOut();
+                  setMenuOpen(false);
+                }}
+                className="block text-red-600 hover:text-red-700 font-medium py-2 transition-colors duration-200 mx-auto"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            // Non-authenticated user mobile navigation
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <Link
+                to="/login"
+                className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg"
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
       {/* Hero Section */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20 px-6 overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-blue-600 rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-600 rounded-full blur-2xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-green-500 rounded-full blur-xl"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto text-center">
+          <div className="mb-8">
+            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              🚀 Advanced QR Features
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent mb-6 leading-tight">
             Powerful QR Code Features
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
             Everything you need to create, customize, and track professional QR
-            codes for your business.
+            codes that drive results for your business.
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold text-lg"
+            >
+              <span className="mr-2">✨</span>
+              Try All Features
+            </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-300 hover:text-blue-600 transition-all duration-200 font-semibold text-lg"
+            >
+              <span className="mr-2">💰</span>
+              View Pricing
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -319,78 +463,121 @@ export default function Features() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">QRGen</h3>
-              <p className="text-gray-400">
-                The most powerful QR code generator for businesses.
+      <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 border-t">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Company Info */}
+            <div className="md:col-span-2">
+              <div className="mb-4">
+                <Logo />
+              </div>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The most powerful and user-friendly QR code generator for
+                businesses and individuals. Create, customize, and track your QR
+                codes with ease.
               </p>
+              <div className="flex space-x-4">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <span className="sr-only">Twitter</span>
+                  <span className="text-xl">🐦</span>
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <span className="sr-only">LinkedIn</span>
+                  <span className="text-xl">💼</span>
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <span className="sr-only">GitHub</span>
+                  <span className="text-xl">⚡</span>
+                </a>
+              </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold text-lg mb-4 text-white">
+                Quick Links
+              </h4>
+              <ul className="space-y-3">
                 <li>
-                  <Link to="/features" className="hover:text-white">
+                  <Link
+                    to="/features"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
                     Features
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="hover:text-white">
+                  <Link
+                    to="/pricing"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
                     Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link to="/dashboard" className="hover:text-white">
+                  <Link
+                    to="/dashboard"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
                     Dashboard
                   </Link>
                 </li>
               </ul>
             </div>
+
+            {/* Support */}
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="font-semibold text-lg mb-4 text-white">Support</h4>
+              <ul className="space-y-3">
                 <li>
-                  <a href="#" className="hover:text-white">
-                    About
-                  </a>
+                  <Link
+                    to="/contact"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    Contact Us
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
-                    Contact
-                  </a>
+                  <Link
+                    to="/privacy"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
-                    Support
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Privacy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Terms
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Security
-                  </a>
+                  <Link
+                    to="/terms"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    Terms of Service
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 QRGen. All rights reserved.</p>
+
+          {/* Bottom bar */}
+          <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              &copy; 2025 QRGen. All rights reserved.
+            </p>
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+              <span className="text-gray-400 text-sm">Made with</span>
+              <span className="text-red-500 text-lg">❤️</span>
+              <span className="text-gray-400 text-sm">
+                for creators worldwide
+              </span>
+            </div>
           </div>
         </div>
       </footer>

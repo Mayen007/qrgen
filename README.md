@@ -12,7 +12,7 @@ A modern, full-fe4. **Set up Firebase**
    npm run dev
    ```
 
-6. **Open your browser**ode generator built with React, Vite, and Firebase. Generate custom QR codes for URLs, WiFi networks, contact information, and plain text with advanced customization options.
+6. **Open your browser** code generator built with React, Vite, and Firebase. Generate custom QR codes for URLs, WiFi networks, contact information, and plain text with advanced customization options.
 
 ![QRGen Logo](https://via.placeholder.com/200x60/3B82F6/FFFFFF?text=QRGen)
 

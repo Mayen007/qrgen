@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
-import "../firebase"; // Initialize Firebase
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import Logo from "../components/Logo";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -44,7 +41,6 @@ export default function Signup() {
     }
 
     try {
-      const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -64,30 +60,42 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/" className="flex justify-center">
-          <h1 className="text-3xl font-bold text-blue-600">QRGen</h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 right-20 w-32 h-32 bg-purple-600 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-blue-600 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-purple-500 rounded-full blur-xl"></div>
+      </div>
+
+      <div className="relative sm:mx-auto sm:w-full sm:max-w-md">
+        <Link to="/" className="flex justify-center group">
+          <div className="transform group-hover:scale-105 transition-transform duration-200">
+            <Logo />
+          </div>
         </Link>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Create your account
+        <h2 className="mt-8 text-center text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent">
+          Join QRGen Today
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Or{" "}
+        <p className="mt-4 text-center text-lg text-gray-600">
+          Start creating amazing QR codes in minutes
+        </p>
+        <p className="mt-2 text-center text-sm text-gray-500">
+          Already have an account?{" "}
           <Link
             to="/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
           >
-            sign in to your existing account
+            Sign in here
           </Link>
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="relative mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white/80 backdrop-blur-sm py-8 px-6 shadow-2xl border border-white/20 sm:rounded-2xl sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
                 {error}
               </div>
             )}
@@ -232,9 +240,16 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-200"
               >
-                {loading ? "Creating account..." : "Create account"}
+                {loading ? (
+                  <span className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Creating account...
+                  </span>
+                ) : (
+                  "Create account"
+                )}
               </button>
             </div>
           </form>

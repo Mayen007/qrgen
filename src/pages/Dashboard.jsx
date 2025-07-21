@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import QRCode from "react-qr-code";
 import QRCodeLib from "qrcode";
+import Logo from "../components/Logo";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -28,7 +30,6 @@ export default function Dashboard() {
   const canvasRef = useRef();
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
@@ -42,7 +43,6 @@ export default function Dashboard() {
   }, [navigate]);
 
   const handleSignOut = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth);
       navigate("/");
@@ -131,17 +131,18 @@ END:VCARD`;
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <Link to="/" className="text-xl font-bold text-blue-600">
-              QRGen
+          <div className="flex justify-between items-center py-4 sm:py-6">
+            <Link to="/" className="flex items-center flex-shrink-0">
+              <Logo />
             </Link>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">
-                Welcome, {user?.displayName || user?.email}
+            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 min-w-0 flex-1 justify-end">
+              <span className="text-gray-700 text-xs sm:text-sm lg:text-base truncate max-w-[80px] sm:max-w-[120px] md:max-w-[160px] lg:max-w-[200px] xl:max-w-none">
+                <span className="hidden lg:inline">Welcome, </span>
+                {user?.displayName || user?.email}
               </span>
               <button
                 onClick={handleSignOut}
-                className="text-gray-700 hover:text-blue-600"
+                className="text-gray-700 hover:text-blue-600 text-xs sm:text-sm lg:text-base whitespace-nowrap flex-shrink-0 px-1 sm:px-2 py-1 hover:bg-gray-50 rounded transition-colors"
               >
                 Sign Out
               </button>
@@ -150,11 +151,11 @@ END:VCARD`;
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* QR Code Generator Form */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
               QR Code Generator
             </h1>
 
@@ -177,14 +178,14 @@ END:VCARD`;
 
             {/* Dynamic Input Based on Type */}
             {(qrType === "url" || qrType === "text") && (
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {qrType === "url" ? "Enter URL" : "Enter Text"}
                 </label>
                 <textarea
                   value={qrData}
                   onChange={(e) => setQrData(e.target.value)}
-                  className="w-full h-32 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-24 sm:h-32 p-3 sm:p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   placeholder={
                     qrType === "url"
                       ? "https://example.com"
@@ -195,7 +196,7 @@ END:VCARD`;
             )}
 
             {qrType === "wifi" && (
-              <div className="mb-6 space-y-4">
+              <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Network Name (SSID)
@@ -206,7 +207,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setWifiData({ ...wifiData, ssid: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="My WiFi Network"
                   />
                 </div>
@@ -220,7 +221,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setWifiData({ ...wifiData, password: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="WiFi Password"
                   />
                 </div>
@@ -233,7 +234,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setWifiData({ ...wifiData, security: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   >
                     <option value="WPA">WPA/WPA2</option>
                     <option value="WEP">WEP</option>
@@ -244,7 +245,7 @@ END:VCARD`;
             )}
 
             {qrType === "contact" && (
-              <div className="mb-6 space-y-4">
+              <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name
@@ -255,7 +256,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setContactData({ ...contactData, name: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="John Doe"
                   />
                 </div>
@@ -269,7 +270,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setContactData({ ...contactData, phone: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="+1234567890"
                   />
                 </div>
@@ -283,7 +284,7 @@ END:VCARD`;
                     onChange={(e) =>
                       setContactData({ ...contactData, email: e.target.value })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -300,7 +301,7 @@ END:VCARD`;
                         organization: e.target.value,
                       })
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                     placeholder="Company Name"
                   />
                 </div>
@@ -312,7 +313,7 @@ END:VCARD`;
               <h3 className="text-lg font-semibold text-gray-800">
                 Customization
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Foreground Color
@@ -360,29 +361,29 @@ END:VCARD`;
           </div>
 
           {/* QR Code Preview and Download */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
               Preview & Download
             </h2>
 
-            <div className="text-center mb-6">
+            <div className="text-center mb-4 sm:mb-6">
               {qrValue ? (
-                <div>
+                <div className="flex justify-center">
                   <QRCode
                     value={qrValue}
-                    size={qrSize}
+                    size={Math.min(qrSize, window.innerWidth < 640 ? 200 : 256)} // More responsive sizing
                     fgColor={qrColor}
                     bgColor={qrBgColor}
-                    className="mx-auto border border-gray-200 rounded-lg"
+                    className="border border-gray-200 rounded-lg max-w-[180px] xs:max-w-[200px] sm:max-w-[256px] w-full h-auto"
                   />
                   <canvas ref={canvasRef} style={{ display: "none" }} />
                 </div>
               ) : (
-                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8">
-                  <div className="text-gray-400 text-lg">
+                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 lg:p-8">
+                  <div className="text-gray-400 text-sm sm:text-base lg:text-lg">
                     Your QR code will appear here
                   </div>
-                  <p className="text-gray-500 text-sm mt-2">
+                  <p className="text-gray-500 text-xs sm:text-sm mt-2">
                     Fill in the form and click "Generate QR Code"
                   </p>
                 </div>
@@ -390,16 +391,16 @@ END:VCARD`;
             </div>
 
             {qrValue && (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <button
                   onClick={() => downloadQR("png")}
-                  className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold"
+                  className="w-full bg-green-600 text-white py-2 sm:py-3 rounded-lg hover:bg-green-700 transition font-semibold text-sm sm:text-base"
                 >
                   Download PNG
                 </button>
                 <button
                   onClick={() => downloadQR("svg")}
-                  className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold"
+                  className="w-full bg-purple-600 text-white py-2 sm:py-3 rounded-lg hover:bg-purple-700 transition font-semibold text-sm sm:text-base"
                 >
                   Download SVG
                 </button>
@@ -408,11 +409,13 @@ END:VCARD`;
 
             {/* QR Code Info */}
             {qrValue && (
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-800 mb-2">
+              <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
                   QR Code Data:
                 </h3>
-                <p className="text-sm text-gray-600 break-all">{qrValue}</p>
+                <p className="text-xs sm:text-sm text-gray-600 break-all">
+                  {qrValue}
+                </p>
               </div>
             )}
           </div>
