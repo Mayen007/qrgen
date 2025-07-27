@@ -2,12 +2,19 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import QRCode from "react-qr-code";
 import Logo from "../components/Logo";
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Live QR Preview State
+  const [demoUrl, setDemoUrl] = useState("https://qrgen.com");
+  const [demoQrColor, setDemoQrColor] = useState("#000000");
+  const [demoQrBgColor, setDemoQrBgColor] = useState("#ffffff");
+  const [demoQrSize, setDemoQrSize] = useState(200);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -315,11 +322,17 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Demo QR Code Preview */}
+          {/* Live QR Code Preview */}
           <div className="relative inline-block">
             <div className="bg-white p-6 rounded-2xl shadow-2xl border border-gray-100">
-              <div className="w-32 h-32 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                <div className="w-24 h-24 bg-white rounded opacity-90"></div>
+              <div className="flex justify-center mb-4">
+                <QRCode
+                  value={demoUrl || "https://qrgen.com"}
+                  size={128}
+                  fgColor={demoQrColor}
+                  bgColor={demoQrBgColor}
+                  className="rounded-lg"
+                />
               </div>
               <p className="text-sm text-gray-500 font-medium">
                 Live QR Preview
@@ -327,6 +340,221 @@ export default function LandingPage() {
             </div>
             <div className="absolute -top-2 -right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
               LIVE
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Demo Section */}
+      <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-blue-50 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              🎯 Try It Live
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              See the magic in action! Generate QR codes instantly with our live
+              preview
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Interactive Controls */}
+            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                🛠️ Customize Your QR Code
+              </h3>
+
+              {/* URL Input */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Enter a URL
+                </label>
+                <input
+                  type="text"
+                  value={demoUrl}
+                  onChange={(e) => setDemoUrl(e.target.value)}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-lg"
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              {/* Color Controls */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    QR Color
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="color"
+                      value={demoQrColor}
+                      onChange={(e) => setDemoQrColor(e.target.value)}
+                      className="w-12 h-12 border border-gray-300 rounded-lg cursor-pointer"
+                    />
+                    <span className="text-sm text-gray-600 font-mono">
+                      {demoQrColor}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Background
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="color"
+                      value={demoQrBgColor}
+                      onChange={(e) => setDemoQrBgColor(e.target.value)}
+                      className="w-12 h-12 border border-gray-300 rounded-lg cursor-pointer"
+                    />
+                    <span className="text-sm text-gray-600 font-mono">
+                      {demoQrBgColor}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Size Control */}
+              <div className="mb-8">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Size: {demoQrSize}px
+                </label>
+                <input
+                  type="range"
+                  min="150"
+                  max="300"
+                  value={demoQrSize}
+                  onChange={(e) => setDemoQrSize(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="space-y-3">
+                <Link
+                  to={user ? "/dashboard" : "/signup"}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-lg"
+                >
+                  {user ? "🚀 Go to Dashboard" : "🎯 Start Creating QR Codes"}
+                </Link>
+                <p className="text-center text-sm text-gray-500">
+                  {user
+                    ? "Access full dashboard features"
+                    : "Free account • No credit card required"}
+                </p>
+              </div>
+            </div>
+
+            {/* Live QR Code Preview */}
+            <div className="flex justify-center">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 relative">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    ⚡ Instant Preview
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Changes appear in real-time
+                  </p>
+                </div>
+
+                <div className="flex justify-center mb-6 p-6 bg-gray-50 rounded-xl">
+                  <QRCode
+                    value={demoUrl || "https://qrgen.com"}
+                    size={demoQrSize}
+                    fgColor={demoQrColor}
+                    bgColor={demoQrBgColor}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+
+                <div className="text-center">
+                  <div className="inline-flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    Live Preview Active
+                  </div>
+                </div>
+
+                {/* Floating Animation Dots */}
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-bounce"></div>
+                <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Features Demo */}
+          <div className="mt-16 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">
+              🌟 See What You Can Create
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {/* WiFi QR Demo */}
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-blue-100">
+                <div className="mb-3">
+                  <QRCode
+                    value="WIFI:T:WPA;S:Guest-Network;P:password123;;"
+                    size={80}
+                    fgColor="#2563eb"
+                    bgColor="#ffffff"
+                    className="mx-auto"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-gray-700">
+                  📶 WiFi QR
+                </p>
+                <p className="text-xs text-gray-500">Share network access</p>
+              </div>
+
+              {/* Contact QR Demo */}
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-purple-100">
+                <div className="mb-3">
+                  <QRCode
+                    value="BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nTEL:+1234567890\nEMAIL:john@example.com\nEND:VCARD"
+                    size={80}
+                    fgColor="#7c3aed"
+                    bgColor="#faf5ff"
+                    className="mx-auto"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-gray-700">
+                  👤 Contact QR
+                </p>
+                <p className="text-xs text-gray-500">Share your info</p>
+              </div>
+
+              {/* Custom Colored QR Demo */}
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-green-100">
+                <div className="mb-3">
+                  <QRCode
+                    value="https://qrgen.com/custom-design"
+                    size={80}
+                    fgColor="#059669"
+                    bgColor="#ecfdf5"
+                    className="mx-auto"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-gray-700">
+                  🎨 Custom Colors
+                </p>
+                <p className="text-xs text-gray-500">Match your brand</p>
+              </div>
+
+              {/* Text QR Demo */}
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-orange-100">
+                <div className="mb-3">
+                  <QRCode
+                    value="Welcome to QRGen! The best QR code generator for all your needs."
+                    size={80}
+                    fgColor="#ea580c"
+                    bgColor="#fff7ed"
+                    className="mx-auto"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-gray-700">
+                  📝 Text QR
+                </p>
+                <p className="text-xs text-gray-500">Share messages</p>
+              </div>
             </div>
           </div>
         </div>
