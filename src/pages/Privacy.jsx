@@ -131,79 +131,124 @@ export default function Privacy() {
 
       {/* Mobile Nav Dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-sm shadow-lg py-6 px-6 text-center space-y-6 border-t border-gray-100 animate-in slide-in-from-top duration-200">
-          <Link
-            to="/features"
-            className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+        <div className="md:hidden fixed top-0 left-0 right-0 bottom-0 z-50">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
-          >
-            Features
-          </Link>
-          <Link
-            to="/pricing"
-            className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
-            onClick={() => setMenuOpen(false)}
-          >
-            Pricing
-          </Link>
-          <Link
-            to="/contact"
-            className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
-            onClick={() => setMenuOpen(false)}
-          >
-            Contact
-          </Link>
-          {user ? (
-            // Authenticated user mobile navigation
-            <div className="space-y-4 pt-4 border-t border-gray-200">
+          ></div>
+
+          {/* Navigation Menu */}
+          <div className="relative bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-100">
+            {/* Header with close button */}
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
               <Link
-                to="/dashboard"
-                className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+                to="/"
+                className="flex items-center"
                 onClick={() => setMenuOpen(false)}
               >
-                Dashboard
+                <Logo />
               </Link>
-              <div className="flex items-center justify-center space-x-3 py-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    {(user.displayName || user.email || "U")
-                      .charAt(0)
-                      .toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-gray-700 font-medium">
-                  {user.displayName || user.email}
-                </span>
-              </div>
               <button
-                onClick={() => {
-                  handleSignOut();
-                  setMenuOpen(false);
-                }}
-                className="block text-red-600 hover:text-red-700 font-medium py-2 transition-colors duration-200 mx-auto"
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                onClick={() => setMenuOpen(false)}
               >
-                Sign Out
+                <svg
+                  className="w-6 h-6 text-gray-700"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
-          ) : (
-            // Non-authenticated user mobile navigation
-            <div className="space-y-4 pt-4 border-t border-gray-200">
+
+            {/* Navigation Links */}
+            <div className="px-6 py-6 space-y-4">
               <Link
-                to="/login"
-                className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-200"
+                to="/features"
+                className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
                 onClick={() => setMenuOpen(false)}
               >
-                Login
+                Features
               </Link>
               <Link
-                to="/signup"
-                className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg"
+                to="/pricing"
+                className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
                 onClick={() => setMenuOpen(false)}
               >
-                Sign Up
+                Pricing
               </Link>
+              <Link
+                to="/contact"
+                className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                onClick={() => setMenuOpen(false)}
+              >
+                Contact
+              </Link>
+
+              {user ? (
+                // Authenticated user mobile navigation
+                <div className="pt-4 border-t border-gray-200 space-y-4">
+                  <Link
+                    to="/dashboard"
+                    className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <div className="flex items-center space-x-3 py-3 px-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {(user.displayName || user.email || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-gray-900 font-medium truncate">
+                        {user.displayName || user.email}
+                      </p>
+                      <p className="text-gray-500 text-sm">Signed in</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-red-600 hover:text-red-700 font-medium py-3 px-4 rounded-lg hover:bg-red-50 transition-all duration-200"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                // Non-authenticated user mobile navigation
+                <div className="pt-4 border-t border-gray-200 space-y-4">
+                  <Link
+                    to="/login"
+                    className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="block bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 text-center shadow-lg"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       )}
 

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
 import Logo from "../components/Logo";
 
 export default function Signup() {
@@ -21,6 +25,25 @@ export default function Signup() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case "auth/email-already-in-use":
+        return "An account with this email already exists. Please try signing in instead.";
+      case "auth/invalid-email":
+        return "Please enter a valid email address.";
+      case "auth/operation-not-allowed":
+        return "Email/password accounts are not enabled. Please contact support.";
+      case "auth/weak-password":
+        return "Password is too weak. Please choose a stronger password.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      case "auth/too-many-requests":
+        return "Too many failed attempts. Please try again later.";
+      default:
+        return "An error occurred while creating your account. Please try again.";
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -51,9 +74,18 @@ export default function Signup() {
         displayName: `${formData.firstName} ${formData.lastName}`,
       });
 
-      navigate("/dashboard");
+      // Sign out the user so they need to sign in manually
+      await signOut(auth);
+
+      // Redirect to login with success message
+      navigate("/login", {
+        state: {
+          message: "Account created successfully! Please sign in to continue.",
+          type: "success",
+        },
+      });
     } catch (error) {
-      setError(error.message);
+      setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
     }
@@ -226,13 +258,16 @@ export default function Signup() {
                 className="ml-2 block text-sm text-gray-900"
               >
                 I agree to the{" "}
-                <a href="#" className="text-blue-600 hover:text-blue-500">
+                <Link to="/terms" className="text-blue-600 hover:text-blue-500">
                   Terms of Service
-                </a>{" "}
+                </Link>{" "}
                 and{" "}
-                <a href="#" className="text-blue-600 hover:text-blue-500">
+                <Link
+                  to="/privacy"
+                  className="text-blue-600 hover:text-blue-500"
+                >
                   Privacy Policy
-                </a>
+                </Link>
               </label>
             </div>
 

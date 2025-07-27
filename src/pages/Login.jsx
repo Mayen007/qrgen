@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Logo from "../components/Logo";
@@ -9,18 +9,51 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if there's a success message from signup
+    if (location.state?.message && location.state?.type === "success") {
+      setSuccessMessage(location.state.message);
+      // Clear the state to prevent message from persisting on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case "auth/user-not-found":
+        return "No account found with this email address. Please check your email or create a new account.";
+      case "auth/wrong-password":
+        return "Incorrect password. Please try again.";
+      case "auth/invalid-email":
+        return "Please enter a valid email address.";
+      case "auth/user-disabled":
+        return "This account has been disabled. Please contact support.";
+      case "auth/too-many-requests":
+        return "Too many failed login attempts. Please try again later.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your connection and try again.";
+      case "auth/invalid-credential":
+        return "Invalid email or password. Please check your credentials and try again.";
+      default:
+        return "Login failed. Please check your credentials and try again.";
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (error) {
-      setError(error.message);
+      setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
     }
@@ -61,6 +94,12 @@ export default function Login() {
       <div className="relative mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white/80 backdrop-blur-sm py-8 px-6 shadow-2xl border border-white/20 sm:rounded-2xl sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg">
+                {successMessage}
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
                 {error}

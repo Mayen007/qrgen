@@ -10,6 +10,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [qrData, setQrData] = useState("");
   const [qrValue, setQrValue] = useState("");
   const [qrColor, setQrColor] = useState("#000000");
@@ -129,50 +130,228 @@ END:VCARD`;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-40 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4 sm:py-6">
+            {/* Logo */}
             <Link to="/" className="flex items-center flex-shrink-0">
               <Logo />
             </Link>
-            <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 min-w-0 flex-1 justify-end">
-              <span className="text-gray-700 text-xs sm:text-sm lg:text-base truncate max-w-[80px] sm:max-w-[120px] md:max-w-[160px] lg:max-w-[200px] xl:max-w-none">
-                <span className="hidden lg:inline">Welcome, </span>
-                {user?.displayName || user?.email}
-              </span>
-              <button
-                onClick={handleSignOut}
-                className="text-gray-700 hover:text-blue-600 text-xs sm:text-sm lg:text-base whitespace-nowrap flex-shrink-0 px-1 sm:px-2 py-1 hover:bg-gray-50 rounded transition-colors"
+
+            <nav className="hidden md:flex space-x-8 items-center">
+              <Link
+                to="/features"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
               >
-                Sign Out
-              </button>
-            </div>
+                Features
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+              </Link>
+              <Link
+                to="/pricing"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+              >
+                Pricing
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+              </Link>
+              <Link
+                to="/contact"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+              >
+                Contact
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+              </Link>
+              {user && (
+                // Authenticated user navigation
+                <div className="flex items-center space-x-6">
+                  <Link
+                    to="/dashboard"
+                    className="text-blue-600 font-medium transition-colors duration-200 relative group"
+                  >
+                    Dashboard
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-100 transition-transform duration-200"></span>
+                  </Link>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {(user.displayName || user.email || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-gray-700 font-medium max-w-32 truncate">
+                      {user.displayName || user.email}
+                    </span>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-gray-500 hover:text-red-600 transition-colors duration-200 font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </nav>
+
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <svg
+                className="w-6 h-6 text-gray-700"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden fixed top-0 left-0 right-0 bottom-0 z-50">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
+
+            {/* Navigation Menu */}
+            <div className="relative bg-white shadow-lg border-b border-gray-100">
+              {/* Header with close button */}
+              <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+                <Link
+                  to="/"
+                  className="flex items-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Logo />
+                </Link>
+                <button
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-700"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <div className="px-6 py-6 space-y-4">
+                <Link
+                  to="/features"
+                  className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="block text-blue-600 font-medium py-3 px-4 rounded-lg bg-blue-50 transition-all duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+
+                {/* User section */}
+                <div className="pt-4 border-t border-gray-200 space-y-4">
+                  <div className="flex items-center space-x-3 py-3 px-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {(user?.displayName || user?.email || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-gray-900 font-medium truncate">
+                        {user?.displayName || user?.email}
+                      </p>
+                      <p className="text-gray-500 text-sm">Dashboard User</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-red-600 hover:text-red-700 font-medium py-3 px-4 rounded-lg hover:bg-red-50 transition-all duration-200"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* QR Code Generator Form */}
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
-              QR Code Generator
-            </h1>
+          <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8">
+            <div className="mb-6">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                QR Code Generator
+              </h1>
+              <p className="text-gray-600">
+                Create custom QR codes for URLs, WiFi, contacts, and more
+              </p>
+            </div>
 
             {/* QR Type Selector */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
                 QR Code Type
               </label>
               <select
                 value={qrType}
                 onChange={(e) => setQrType(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
-                <option value="url">Website URL</option>
-                <option value="text">Plain Text</option>
-                <option value="wifi">WiFi Network</option>
-                <option value="contact">Contact (vCard)</option>
+                <option value="url">🌐 Website URL</option>
+                <option value="text">📝 Plain Text</option>
+                <option value="wifi">📶 WiFi Network</option>
+                <option value="contact">👤 Contact (vCard)</option>
               </select>
             </div>
 
@@ -354,17 +533,22 @@ END:VCARD`;
 
             <button
               onClick={handleGenerate}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Generate QR Code
             </button>
           </div>
 
           {/* QR Code Preview and Download */}
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
-              Preview & Download
-            </h2>
+          <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8">
+            <div className="mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                Preview & Download
+              </h2>
+              <p className="text-gray-600">
+                Preview your QR code and download in multiple formats
+              </p>
+            </div>
 
             <div className="text-center mb-4 sm:mb-6">
               {qrValue ? (
@@ -391,18 +575,18 @@ END:VCARD`;
             </div>
 
             {qrValue && (
-              <div className="space-y-2 sm:space-y-3">
+              <div className="space-y-3">
                 <button
                   onClick={() => downloadQR("png")}
-                  className="w-full bg-green-600 text-white py-2 sm:py-3 rounded-lg hover:bg-green-700 transition font-semibold text-sm sm:text-base"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  Download PNG
+                  📥 Download PNG
                 </button>
                 <button
                   onClick={() => downloadQR("svg")}
-                  className="w-full bg-purple-600 text-white py-2 sm:py-3 rounded-lg hover:bg-purple-700 transition font-semibold text-sm sm:text-base"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  Download SVG
+                  🎨 Download SVG
                 </button>
               </div>
             )}
