@@ -9,6 +9,7 @@ export default function Pricing() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -594,42 +595,72 @@ export default function Pricing() {
           <div className="space-y-6">
             {[
               {
+                id: 1,
                 question: "Can I change my plan at any time?",
                 answer:
                   "Yes, you can upgrade or downgrade your plan at any time. Changes will be prorated and reflected in your next billing cycle.",
               },
               {
+                id: 2,
                 question: "What happens to my QR codes if I downgrade?",
                 answer:
                   "Your existing QR codes will continue to work. However, you may lose access to certain features like analytics or the ability to edit dynamic QR codes.",
               },
               {
+                id: 3,
                 question: "Do you offer refunds?",
                 answer:
                   "We offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, contact our support team for a full refund.",
               },
               {
-                question: "Is there a free trial?",
-                answer:
-                  "Yes! Our Pro plan comes with a 14-day free trial. No credit card required to start.",
-              },
-              {
+                id: 4,
                 question: "Can I use QRGen for commercial purposes?",
                 answer:
                   "Absolutely! All our plans support commercial use. The Pro and Enterprise plans are specifically designed for business needs.",
               },
-            ].map((faq, index) => (
+            ].map((faq) => (
               <div
-                key={index}
-                className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                key={faq.id}
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
               >
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <span className="text-blue-600 mr-3">❓</span>
-                  {faq.question}
-                </h3>
-                <p className="text-gray-700 leading-relaxed pl-8">
-                  {faq.answer}
-                </p>
+                <button
+                  className="w-full px-8 py-6 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onClick={() =>
+                    setExpandedFaq(expandedFaq === faq.id ? null : faq.id)
+                  }
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900 pr-4">
+                      {faq.question}
+                    </h3>
+                    <div className="flex-shrink-0">
+                      <svg
+                        className={`w-6 h-6 text-gray-500 transition-transform duration-200 ${
+                          expandedFaq === faq.id ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+                {expandedFaq === faq.id && (
+                  <div className="px-8 pb-6">
+                    <div className="border-t border-gray-100 pt-6">
+                      <p className="text-gray-600 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

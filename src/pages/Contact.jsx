@@ -790,12 +790,6 @@ export default function Contact() {
                 answer:
                   "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and ACH bank transfers for annual plans. Enterprise customers can also pay via wire transfer or purchase orders. All payments are securely processed and PCI-compliant.",
               },
-              {
-                id: 5,
-                question: "Is there a free trial available?",
-                answer:
-                  "Yes! We offer a 14-day free trial of our Pro plan with no credit card required. This gives you full access to advanced features including analytics, custom branding, and bulk generation. You can upgrade, downgrade, or cancel anytime during or after the trial.",
-              },
             ].map((faq) => (
               <div
                 key={faq.id}
