@@ -11,10 +11,23 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(true);
 
   // Live QR Preview State
-  const [demoUrl, setDemoUrl] = useState("https://qrgen.com");
+  const [demoUrl, setDemoUrl] = useState("https://bluewey.netlify.app/");
   const [demoQrColor, setDemoQrColor] = useState("#000000");
   const [demoQrBgColor, setDemoQrBgColor] = useState("#ffffff");
-  const [demoQrSize, setDemoQrSize] = useState(200);
+  const [demoQrSize, setDemoQrSize] = useState(250);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -327,7 +340,7 @@ export default function LandingPage() {
             <div className="bg-white p-6 rounded-2xl shadow-2xl border border-gray-100">
               <div className="flex justify-center mb-4">
                 <QRCode
-                  value={demoUrl || "https://qrgen.com"}
+                  value={demoUrl || "https://bluewey.netlify.app/"}
                   size={128}
                   fgColor={demoQrColor}
                   bgColor={demoQrBgColor}
@@ -346,22 +359,22 @@ export default function LandingPage() {
       </section>
 
       {/* Interactive Demo Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-blue-50 relative">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-br from-gray-50 to-blue-50 relative">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               🎯 Try It Live
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
               See the magic in action! Generate QR codes instantly with our live
               preview
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Interactive Controls */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+            <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 w-full order-2 lg:order-1">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
                 🛠️ Customize Your QR Code
               </h3>
 
@@ -374,13 +387,13 @@ export default function LandingPage() {
                   type="text"
                   value={demoUrl}
                   onChange={(e) => setDemoUrl(e.target.value)}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-lg"
+                  className="w-full p-3 sm:p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base sm:text-lg"
                   placeholder="https://example.com"
                 />
               </div>
 
               {/* Color Controls */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     QR Color
@@ -390,9 +403,9 @@ export default function LandingPage() {
                       type="color"
                       value={demoQrColor}
                       onChange={(e) => setDemoQrColor(e.target.value)}
-                      className="w-12 h-12 border border-gray-300 rounded-lg cursor-pointer"
+                      className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-lg cursor-pointer flex-shrink-0"
                     />
-                    <span className="text-sm text-gray-600 font-mono">
+                    <span className="text-xs sm:text-sm text-gray-600 font-mono truncate">
                       {demoQrColor}
                     </span>
                   </div>
@@ -406,9 +419,9 @@ export default function LandingPage() {
                       type="color"
                       value={demoQrBgColor}
                       onChange={(e) => setDemoQrBgColor(e.target.value)}
-                      className="w-12 h-12 border border-gray-300 rounded-lg cursor-pointer"
+                      className="w-10 h-10 sm:w-12 sm:h-12 border border-gray-300 rounded-lg cursor-pointer flex-shrink-0"
                     />
-                    <span className="text-sm text-gray-600 font-mono">
+                    <span className="text-xs sm:text-sm text-gray-600 font-mono truncate">
                       {demoQrBgColor}
                     </span>
                   </div>
@@ -416,14 +429,14 @@ export default function LandingPage() {
               </div>
 
               {/* Size Control */}
-              <div className="mb-8">
+              <div className="mb-6 sm:mb-8">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Size: {demoQrSize}px
                 </label>
                 <input
                   type="range"
                   min="150"
-                  max="300"
+                  max="500"
                   value={demoQrSize}
                   onChange={(e) => setDemoQrSize(Number(e.target.value))}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
@@ -434,7 +447,7 @@ export default function LandingPage() {
               <div className="space-y-3">
                 <Link
                   to={user ? "/dashboard" : "/signup"}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-lg"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-base sm:text-lg"
                 >
                   {user ? "🚀 Go to Dashboard" : "🎯 Start Creating QR Codes"}
                 </Link>
@@ -447,10 +460,10 @@ export default function LandingPage() {
             </div>
 
             {/* Live QR Code Preview */}
-            <div className="flex justify-center">
-              <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 relative">
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <div className="flex justify-center w-full order-1 lg:order-2">
+              <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 relative w-full max-w-md mx-auto lg:max-w-none">
+                <div className="text-center mb-4 sm:mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                     ⚡ Instant Preview
                   </h3>
                   <p className="text-gray-600 text-sm">
@@ -458,26 +471,29 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                <div className="flex justify-center mb-6 p-6 bg-gray-50 rounded-xl">
+                <div className="flex justify-center mb-4 sm:mb-6 p-3 sm:p-4 lg:p-6 bg-gray-50 rounded-xl">
                   <QRCode
-                    value={demoUrl || "https://qrgen.com"}
-                    size={demoQrSize}
+                    value={demoUrl || "https://bluewey.netlify.app/"}
+                    size={Math.min(
+                      demoQrSize,
+                      isMobile ? Math.min(demoQrSize, 250) : demoQrSize
+                    )}
                     fgColor={demoQrColor}
                     bgColor={demoQrBgColor}
-                    className="rounded-lg shadow-lg"
+                    className="rounded-lg shadow-lg max-w-full h-auto"
                   />
                 </div>
 
                 <div className="text-center">
-                  <div className="inline-flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="inline-flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                     Live Preview Active
                   </div>
                 </div>
 
                 {/* Floating Animation Dots */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-bounce"></div>
-                <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+                <div className="absolute -top-2 -right-2 w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-bounce"></div>
+                <div className="absolute -bottom-2 -left-2 w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -526,7 +542,7 @@ export default function LandingPage() {
               <div className="bg-white p-4 rounded-xl shadow-lg border border-green-100">
                 <div className="mb-3">
                   <QRCode
-                    value="https://qrgen.com/custom-design"
+                    value="https://bluewey.netlify.app/custom-design"
                     size={80}
                     fgColor="#059669"
                     bgColor="#ecfdf5"
