@@ -515,7 +515,8 @@ export default function Features() {
             Ready to Create Your First QR Code?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Join thousands of businesses using QRGen for their QR code needs. Experience the power of advanced features today.
+            Join thousands of businesses using QRGen for their QR code needs.
+            Experience the power of advanced features today.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
