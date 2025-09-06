@@ -8,6 +8,7 @@ export default function Pricing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAnnual, setIsAnnual] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -41,7 +42,8 @@ export default function Pricing() {
   const plans = [
     {
       name: "Free",
-      price: "$0",
+      monthlyPrice: "$0",
+      annualPrice: "$0",
       period: "forever",
       description: "Perfect for personal use and testing",
       features: [
@@ -57,7 +59,9 @@ export default function Pricing() {
     },
     {
       name: "Pro",
-      price: "$19",
+      monthlyPrice: "$19",
+      annualPrice: "$15",
+      originalAnnualPrice: "$19",
       period: "per month",
       description: "Best for small businesses and freelancers",
       features: [
@@ -76,7 +80,9 @@ export default function Pricing() {
     },
     {
       name: "Enterprise",
-      price: "$99",
+      monthlyPrice: "$99",
+      annualPrice: "$79",
+      originalAnnualPrice: "$99",
       period: "per month",
       description: "For large teams and organizations",
       features: [
@@ -351,14 +357,38 @@ export default function Pricing() {
           </p>
 
           <div className="flex justify-center items-center space-x-4 mb-8">
-            <span className="text-gray-600 font-medium">Monthly</span>
+            <span
+              className={`font-medium transition-colors duration-200 ${
+                !isAnnual ? "text-blue-600" : "text-gray-600"
+              }`}
+            >
+              Monthly
+            </span>
             <div className="relative">
-              <input type="checkbox" className="sr-only" />
-              <div className="w-12 h-6 bg-gray-300 rounded-full shadow-inner cursor-pointer">
-                <div className="w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 translate-x-0.5 mt-0.5"></div>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={isAnnual}
+                onChange={(e) => setIsAnnual(e.target.checked)}
+              />
+              <div
+                className={`w-12 h-6 rounded-full shadow-inner cursor-pointer transition-colors duration-200 ${
+                  isAnnual ? "bg-blue-600" : "bg-gray-300"
+                }`}
+                onClick={() => setIsAnnual(!isAnnual)}
+              >
+                <div
+                  className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-200 mt-0.5 ${
+                    isAnnual ? "translate-x-6" : "translate-x-0.5"
+                  }`}
+                ></div>
               </div>
             </div>
-            <span className="text-gray-600 font-medium">
+            <span
+              className={`font-medium transition-colors duration-200 ${
+                isAnnual ? "text-blue-600" : "text-gray-600"
+              }`}
+            >
               Annual
               <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                 Save 20%
@@ -404,10 +434,37 @@ export default function Pricing() {
                   </h3>
                   <p className="text-gray-600 mb-6">{plan.description}</p>
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-gray-900">
-                      {plan.price}
-                    </span>
-                    <span className="text-gray-600 ml-2">/{plan.period}</span>
+                    <div className="flex items-center justify-center space-x-2">
+                      <span className="text-5xl font-bold text-gray-900">
+                        {isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                      </span>
+                      {plan.name !== "Free" && (
+                        <div className="flex flex-col items-start">
+                          <span className="text-gray-600 text-base">
+                            /{isAnnual ? "month" : plan.period}
+                          </span>
+                          {isAnnual && plan.originalAnnualPrice && (
+                            <span className="text-sm text-gray-400 line-through">
+                              {plan.originalAnnualPrice}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {plan.name === "Free" && (
+                        <span className="text-gray-600 ml-2">
+                          /{plan.period}
+                        </span>
+                      )}
+                    </div>
+                    {isAnnual && plan.name !== "Free" && (
+                      <p className="text-sm text-green-600 font-medium mt-2">
+                        Billed annually ($
+                        {isAnnual
+                          ? parseInt(plan.annualPrice.replace("$", "")) * 12
+                          : parseInt(plan.monthlyPrice.replace("$", "")) * 12}
+                        /year)
+                      </p>
+                    )}
                   </div>
                   <Link
                     to={plan.ctaLink}
