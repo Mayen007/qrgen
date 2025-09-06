@@ -496,24 +496,38 @@ export default function Features() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 py-20 px-6 overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-32 h-32 bg-white rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 left-20 w-40 h-40 bg-white rounded-full blur-2xl"></div>
+          <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-white rounded-full blur-xl"></div>
+        </div>
+
+        <div className="relative max-w-4xl mx-auto text-center">
+          <div className="mb-8">
+            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
+              🚀 Ready to Start?
+            </span>
+          </div>
+
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             Ready to Create Your First QR Code?
           </h2>
-          <p className="text-blue-100 text-lg mb-8">
-            Join thousands of businesses using QRGen for their QR code needs.
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Join thousands of businesses using QRGen for their QR code needs. Experience the power of advanced features today.
           </p>
-          <div className="space-x-4">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               to="/signup"
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 inline-block"
+              className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 shadow-xl"
             >
               Get Started Free
             </Link>
             <Link
               to="/dashboard"
-              className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 inline-block"
+              className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105"
             >
               Try Demo
             </Link>
