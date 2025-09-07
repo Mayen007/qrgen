@@ -4,6 +4,26 @@ import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import QRCode from "react-qr-code";
 import Logo from "../components/Logo";
+import {
+  Rocket,
+  Clipboard,
+  Target,
+  Settings,
+  Zap,
+  Star,
+  Palette,
+  BarChart3,
+  Smartphone,
+  FileText,
+  Twitter,
+  Briefcase,
+  Heart,
+  RotateCcw,
+  Shield,
+  User,
+  Wifi,
+  Sparkles,
+} from "lucide-react";
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -102,20 +122,12 @@ export default function LandingPage() {
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    {user.photoURL ? (
+                    {user.photoURL && (
                       <img
                         src={user.photoURL}
                         alt={user.displayName || "User"}
                         className="w-8 h-8 rounded-full border-2 border-gray-200"
                       />
-                    ) : (
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          {(user.displayName || user.email || "U")
-                            .charAt(0)
-                            .toUpperCase()}
-                        </span>
-                      </div>
                     )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
@@ -249,20 +261,12 @@ export default function LandingPage() {
                     Dashboard
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    {user.photoURL ? (
+                    {user.photoURL && (
                       <img
                         src={user.photoURL}
                         alt={user.displayName || "User"}
                         className="w-10 h-10 rounded-full border-2 border-gray-200"
                       />
-                    ) : (
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
-                          {(user.displayName || user.email || "U")
-                            .charAt(0)
-                            .toUpperCase()}
-                        </span>
-                      </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
@@ -316,8 +320,9 @@ export default function LandingPage() {
 
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              ✨ The #1 QR Code Generator
+            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              The #1 QR Code Generator
             </span>
           </div>
 
@@ -339,14 +344,14 @@ export default function LandingPage() {
               to="/dashboard"
               className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold text-lg"
             >
-              <span className="mr-2">🚀</span>
+              <Rocket className="mr-2 w-5 h-5" />
               Start Creating Free
             </Link>
             <Link
               to="/features"
               className="inline-flex items-center border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-300 hover:text-blue-600 transition-all duration-200 font-semibold text-lg"
             >
-              <span className="mr-2">📋</span>
+              <Clipboard className="mr-2 w-5 h-5" />
               View Features
             </Link>
           </div>
@@ -378,8 +383,9 @@ export default function LandingPage() {
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-br from-gray-50 to-blue-50 relative">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              🎯 Try It Live
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+              <Target className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-blue-600" />
+              Try It Live
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
               See the magic in action! Generate QR codes instantly with our live
@@ -390,8 +396,9 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Interactive Controls */}
             <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 w-full order-2 lg:order-1">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
-                🛠️ Customize Your QR Code
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+                <Settings className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" />
+                Customize Your QR Code
               </h3>
 
               {/* URL Input */}
@@ -463,9 +470,19 @@ export default function LandingPage() {
               <div className="space-y-3">
                 <Link
                   to={user ? "/dashboard" : "/signup"}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-base sm:text-lg"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-base sm:text-lg flex items-center justify-center gap-2"
                 >
-                  {user ? "🚀 Go to Dashboard" : "🎯 Start Creating QR Codes"}
+                  {user ? (
+                    <>
+                      <Rocket className="w-5 h-5" />
+                      Go to Dashboard
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-5 h-5" />
+                      Start Creating QR Codes
+                    </>
+                  )}
                 </Link>
                 <p className="text-center text-sm text-gray-500">
                   {user
@@ -479,8 +496,9 @@ export default function LandingPage() {
             <div className="flex justify-center w-full order-1 lg:order-2">
               <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 relative w-full max-w-md mx-auto lg:max-w-none">
                 <div className="text-center mb-4 sm:mb-6">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
-                    ⚡ Instant Preview
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+                    <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                    Instant Preview
                   </h3>
                   <p className="text-gray-600 text-sm">
                     Changes appear in real-time
@@ -516,8 +534,9 @@ export default function LandingPage() {
 
           {/* Quick Features Demo */}
           <div className="mt-16 text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">
-              🌟 See What You Can Create
+            <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center justify-center gap-3">
+              <Star className="w-6 h-6 text-yellow-500" />
+              See What You Can Create
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {/* WiFi QR Demo */}
@@ -531,8 +550,9 @@ export default function LandingPage() {
                     className="mx-auto"
                   />
                 </div>
-                <p className="text-sm font-semibold text-gray-700">
-                  📶 WiFi QR
+                <p className="text-sm font-semibold text-gray-700 flex items-center justify-center gap-1">
+                  <Wifi className="w-4 h-4" />
+                  WiFi QR
                 </p>
                 <p className="text-xs text-gray-500">Share network access</p>
               </div>
@@ -548,8 +568,9 @@ export default function LandingPage() {
                     className="mx-auto"
                   />
                 </div>
-                <p className="text-sm font-semibold text-gray-700">
-                  👤 Contact QR
+                <p className="text-sm font-semibold text-gray-700 flex items-center justify-center gap-1">
+                  <User className="w-4 h-4" />
+                  Contact QR
                 </p>
                 <p className="text-xs text-gray-500">Share your info</p>
               </div>
@@ -565,8 +586,9 @@ export default function LandingPage() {
                     className="mx-auto"
                   />
                 </div>
-                <p className="text-sm font-semibold text-gray-700">
-                  🎨 Custom Colors
+                <p className="text-sm font-semibold text-gray-700 flex items-center justify-center gap-1">
+                  <Palette className="w-4 h-4" />
+                  Custom Colors
                 </p>
                 <p className="text-xs text-gray-500">Match your brand</p>
               </div>
@@ -582,8 +604,9 @@ export default function LandingPage() {
                     className="mx-auto"
                   />
                 </div>
-                <p className="text-sm font-semibold text-gray-700">
-                  📝 Text QR
+                <p className="text-sm font-semibold text-gray-700 flex items-center justify-center gap-1">
+                  <FileText className="w-4 h-4" />
+                  Text QR
                 </p>
                 <p className="text-xs text-gray-500">Share messages</p>
               </div>
@@ -610,7 +633,7 @@ export default function LandingPage() {
             {/* Feature 1 */}
             <div className="group bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">🎨</span>
+                <Palette className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Full Customization
@@ -625,7 +648,7 @@ export default function LandingPage() {
             {/* Feature 2 */}
             <div className="group bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl border border-purple-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">📊</span>
+                <BarChart3 className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Advanced Analytics
@@ -639,7 +662,7 @@ export default function LandingPage() {
             {/* Feature 3 */}
             <div className="group bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">🔁</span>
+                <RotateCcw className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Dynamic Links
@@ -653,7 +676,7 @@ export default function LandingPage() {
             {/* Feature 4 */}
             <div className="group bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-2xl border border-orange-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">📱</span>
+                <Smartphone className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Multiple Formats
@@ -667,7 +690,7 @@ export default function LandingPage() {
             {/* Feature 5 */}
             <div className="group bg-gradient-to-br from-pink-50 to-pink-100 p-8 rounded-2xl border border-pink-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">⚡</span>
+                <Zap className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Lightning Fast
@@ -681,7 +704,7 @@ export default function LandingPage() {
             {/* Feature 6 */}
             <div className="group bg-gradient-to-br from-indigo-50 to-indigo-100 p-8 rounded-2xl border border-indigo-200 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">🔐</span>
+                <Shield className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Secure & Private
@@ -770,7 +793,7 @@ export default function LandingPage() {
               to="/dashboard"
               className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-semibold text-lg"
             >
-              <span className="mr-2">✨</span>
+              <Sparkles className="w-4 h-4 mr-2" />
               Try It Now - It's Free!
             </Link>
           </div>
@@ -810,9 +833,10 @@ export default function LandingPage() {
               <div className="mb-4">
                 <div className="flex space-x-1 mb-3">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">
-                      ⭐
-                    </span>
+                    <Star
+                      key={i}
+                      className="text-yellow-400 w-5 h-5 fill-current"
+                    />
                   ))}
                 </div>
                 <p className="text-gray-700 leading-relaxed">
@@ -837,9 +861,10 @@ export default function LandingPage() {
               <div className="mb-4">
                 <div className="flex space-x-1 mb-3">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">
-                      ⭐
-                    </span>
+                    <Star
+                      key={i}
+                      className="text-yellow-400 w-5 h-5 fill-current"
+                    />
                   ))}
                 </div>
                 <p className="text-gray-700 leading-relaxed">
@@ -863,9 +888,10 @@ export default function LandingPage() {
               <div className="mb-4">
                 <div className="flex space-x-1 mb-3">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">
-                      ⭐
-                    </span>
+                    <Star
+                      key={i}
+                      className="text-yellow-400 w-5 h-5 fill-current"
+                    />
                   ))}
                 </div>
                 <p className="text-gray-700 leading-relaxed">
@@ -915,21 +941,21 @@ export default function LandingPage() {
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
-                  <span className="text-xl">🐦</span>
+                  <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <span className="text-xl">💼</span>
+                  <Briefcase className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
-                  <span className="text-xl">⚡</span>
+                  <Zap className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -1006,7 +1032,7 @@ export default function LandingPage() {
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Made with</span>
-              <span className="text-red-500 text-lg">❤️</span>
+              <Heart className="text-red-500 w-5 h-5 fill-current" />
               <span className="text-gray-400 text-sm">
                 for creators worldwide
               </span>

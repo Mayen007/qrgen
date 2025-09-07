@@ -3,6 +3,17 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "../components/Logo";
+import {
+  Lightbulb,
+  Briefcase,
+  Wrench,
+  HelpCircle,
+  Twitter,
+  Heart,
+  MessageSquare,
+  CreditCard,
+  Zap,
+} from "lucide-react";
 
 export default function Contact() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -96,13 +107,13 @@ export default function Contact() {
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
                     </span>
@@ -235,13 +246,13 @@ export default function Contact() {
                     Dashboard
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
                         {user.displayName || user.email}
@@ -294,8 +305,9 @@ export default function Contact() {
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              💬 We're Here to Help
+            <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              We're Here to Help
             </span>
           </div>
 
@@ -548,7 +560,8 @@ export default function Contact() {
                   </p>
                   <div className="bg-blue-50 rounded-lg p-4 mb-6">
                     <p className="text-blue-700 text-sm">
-                      💡 <strong>Pro tip:</strong> For urgent matters, call us
+                      <Lightbulb className="w-4 h-4 mr-2 text-yellow-500" />
+                      <strong>Pro tip:</strong> For urgent matters, call us
                       directly at +1 (555) 123-4567
                     </p>
                   </div>
@@ -584,11 +597,11 @@ export default function Contact() {
                       onChange={handleChange}
                       className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
                     >
-                      <option value="general">💬 General Inquiry</option>
-                      <option value="sales">💼 Sales & Enterprise</option>
-                      <option value="support">🔧 Technical Support</option>
-                      <option value="billing">💳 Billing Question</option>
-                      <option value="partnership">🤝 Partnership</option>
+                      <option value="general">General Inquiry</option>
+                      <option value="sales">Sales & Enterprise</option>
+                      <option value="support">Technical Support</option>
+                      <option value="billing">Billing Question</option>
+                      <option value="partnership">Partnership</option>
                     </select>
                   </div>
 
@@ -752,8 +765,9 @@ export default function Contact() {
       <section className="bg-gradient-to-br from-gray-50 to-blue-50 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              ❓ Frequently Asked Questions
+            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center gap-2">
+              <HelpCircle className="w-4 h-4" />
+              Frequently Asked Questions
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Got Questions? We've Got Answers
@@ -900,21 +914,21 @@ export default function Contact() {
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
-                  <span className="text-xl">🐦</span>
+                  <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <span className="text-xl">💼</span>
+                  <Briefcase className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
-                  <span className="text-xl">⚡</span>
+                  <Zap className="text-xl" />
                 </a>
               </div>
             </div>
@@ -991,7 +1005,7 @@ export default function Contact() {
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Made with</span>
-              <span className="text-red-500 text-lg">❤️</span>
+              <Heart className="text-red-500 w-5 h-5 fill-current" />
               <span className="text-gray-400 text-sm">
                 for creators worldwide
               </span>

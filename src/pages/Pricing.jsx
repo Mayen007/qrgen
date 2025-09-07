@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "../components/Logo";
+import {
+  DollarSign,
+  Rocket,
+  Star,
+  Twitter,
+  Briefcase,
+  Zap,
+  Heart,
+  User,
+} from "lucide-react";
 
 export default function Pricing() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -146,13 +156,13 @@ export default function Pricing() {
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
                     </span>
@@ -285,13 +295,13 @@ export default function Pricing() {
                     Dashboard
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
                         {user.displayName || user.email}
@@ -344,8 +354,9 @@ export default function Pricing() {
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              💰 Simple & Transparent
+            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Simple & Transparent
             </span>
           </div>
 
@@ -422,13 +433,15 @@ export default function Pricing() {
 
                 <div className="text-center mb-8">
                   <div className="mb-4">
-                    <span className="text-4xl">
-                      {plan.name === "Free"
-                        ? "🚀"
-                        : plan.name === "Pro"
-                        ? "⭐"
-                        : "🏢"}
-                    </span>
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                      {plan.name === "Free" ? (
+                        <Rocket className="w-8 h-8 text-white" />
+                      ) : plan.name === "Pro" ? (
+                        <Star className="w-8 h-8 text-white" />
+                      ) : (
+                        <Briefcase className="w-8 h-8 text-white" />
+                      )}
+                    </div>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {plan.name}
@@ -529,21 +542,21 @@ export default function Pricing() {
                 author: "Sarah Johnson",
                 role: "Marketing Director",
                 company: "TechStart Inc.",
-                avatar: "👩‍💼",
+                avatar: "S",
               },
               {
                 text: "Best QR code generator I've used. The Pro plan is worth every penny for the features.",
                 author: "Mike Chen",
                 role: "Restaurant Owner",
                 company: "Urban Bistro",
-                avatar: "👨‍🍳",
+                avatar: "M",
               },
               {
                 text: "Enterprise features help us manage QR codes across all our locations seamlessly.",
                 author: "Emily Davis",
                 role: "Operations Manager",
                 company: "RetailChain Co.",
-                avatar: "👩‍💻",
+                avatar: "E",
               },
             ].map((testimonial, index) => (
               <div
@@ -569,9 +582,10 @@ export default function Pricing() {
                 </p>
                 <div className="flex mt-4">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400 text-lg">
-                      ⭐
-                    </span>
+                    <Star
+                      key={i}
+                      className="text-yellow-400 w-5 h-5 fill-current"
+                    />
                   ))}
                 </div>
               </div>
@@ -678,8 +692,9 @@ export default function Pricing() {
 
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-              🚀 Ready to Start?
+            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <Rocket className="w-4 h-4" />
+              Ready to Start?
             </span>
           </div>
 
@@ -728,21 +743,21 @@ export default function Pricing() {
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
-                  <span className="text-xl">🐦</span>
+                  <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <span className="text-xl">💼</span>
+                  <Briefcase className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
-                  <span className="text-xl">⚡</span>
+                  <Zap className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -819,7 +834,7 @@ export default function Pricing() {
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Made with</span>
-              <span className="text-red-500 text-lg">❤️</span>
+              <Heart className="text-red-500 w-5 h-5 fill-current" />
               <span className="text-gray-400 text-sm">
                 for creators worldwide
               </span>

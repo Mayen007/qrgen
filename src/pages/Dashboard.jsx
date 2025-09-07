@@ -5,6 +5,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import QRCode from "react-qr-code";
 import QRCodeLib from "qrcode";
 import Logo from "../components/Logo";
+import { Globe, FileText, Wifi, User, Palette, Download } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -335,13 +336,13 @@ END:VCARD`;
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
                     </span>
@@ -459,13 +460,13 @@ END:VCARD`;
                 {/* User section */}
                 <div className="pt-4 border-t border-gray-200 space-y-4">
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user?.displayName || user?.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user?.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user?.displayName || "User"}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
                         {user?.displayName || user?.email}
@@ -512,10 +513,10 @@ END:VCARD`;
                 onChange={(e) => handleQrTypeChange(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
-                <option value="url">🌐 Website URL</option>
-                <option value="text">📝 Plain Text</option>
-                <option value="wifi">📶 WiFi Network</option>
-                <option value="contact">👤 Contact (vCard)</option>
+                <option value="url">Website URL</option>
+                <option value="text">Plain Text</option>
+                <option value="wifi">WiFi Network</option>
+                <option value="contact">Contact (vCard)</option>
               </select>
             </div>
 
@@ -954,15 +955,17 @@ END:VCARD`;
               <div className="space-y-3">
                 <button
                   onClick={() => downloadQR("png")}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                 >
-                  📥 Download PNG
+                  <Download className="w-5 h-5" />
+                  Download PNG
                 </button>
                 <button
                   onClick={() => downloadQR("svg")}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                 >
-                  🎨 Download SVG
+                  <Palette className="w-5 h-5" />
+                  Download SVG
                 </button>
               </div>
             )}

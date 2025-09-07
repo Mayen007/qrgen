@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "../components/Logo";
+import { Twitter, Briefcase, Heart, Zap } from "lucide-react";
 
 export default function Privacy() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -66,13 +67,13 @@ export default function Privacy() {
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
                     </span>
@@ -204,13 +205,13 @@ export default function Privacy() {
                     Dashboard
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
                         {user.displayName || user.email}
@@ -445,21 +446,21 @@ export default function Privacy() {
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
-                  <span className="text-xl">🐦</span>
+                  <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <span className="text-xl">💼</span>
+                  <Briefcase className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
-                  <span className="text-xl">⚡</span>
+                  <Zap className="text-xl" />
                 </a>
               </div>
             </div>
@@ -536,7 +537,7 @@ export default function Privacy() {
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Made with</span>
-              <span className="text-red-500 text-lg">❤️</span>
+              <Heart className="text-red-500 w-5 h-5 fill-current" />
               <span className="text-gray-400 text-sm">
                 for creators worldwide
               </span>

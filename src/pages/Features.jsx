@@ -3,6 +3,22 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "../components/Logo";
+import {
+  Rocket,
+  DollarSign,
+  Palette,
+  BarChart3,
+  Shield,
+  Smartphone,
+  Zap,
+  Target,
+  Twitter,
+  Briefcase,
+  Heart,
+  Download,
+  Link as LinkIcon,
+  RotateCcw,
+} from "lucide-react";
 
 export default function Features() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,13 +83,13 @@ export default function Features() {
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <span className="text-gray-700 font-medium max-w-32 truncate">
                       {user.displayName || user.email}
                     </span>
@@ -206,13 +222,13 @@ export default function Features() {
                     Dashboard
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(user.displayName || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
+                    {user.photoURL && (
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || "User"}
+                        className="w-10 h-10 rounded-full border-2 border-gray-200"
+                      />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-900 font-medium truncate">
                         {user.displayName || user.email}
@@ -265,8 +281,9 @@ export default function Features() {
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              🚀 Advanced QR Features
+            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <Rocket className="w-4 h-4" />
+              Advanced QR Features
             </span>
           </div>
 
@@ -290,7 +307,7 @@ export default function Features() {
               to="/pricing"
               className="inline-flex items-center border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-blue-300 hover:text-blue-600 transition-all duration-200 font-semibold text-lg"
             >
-              <span className="mr-2">💰</span>
+              <DollarSign className="mr-2 w-5 h-5" />
               View Pricing
             </Link>
           </div>
@@ -302,7 +319,9 @@ export default function Features() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
-              <div className="text-blue-600 text-5xl mb-4">🎨</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-20 h-20 bg-blue-50 rounded-2xl">
+                <Palette className="w-10 h-10" />
+              </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Full Customization
               </h2>
@@ -363,7 +382,9 @@ export default function Features() {
               </div>
             </div>
             <div className="order-1 lg:order-2">
-              <div className="text-blue-600 text-5xl mb-4">📊</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-20 h-20 bg-blue-50 rounded-2xl">
+                <BarChart3 className="w-10 h-10" />
+              </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Advanced Analytics
               </h2>
@@ -393,7 +414,7 @@ export default function Features() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
-              <div className="text-blue-600 text-5xl mb-4">🔁</div>
+              <RotateCcw className="w-12 h-12 text-blue-600 mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Dynamic QR Codes
               </h2>
@@ -448,7 +469,9 @@ export default function Features() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">🔒</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <Shield className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">
                 Password Protection
               </h3>
@@ -457,35 +480,45 @@ export default function Features() {
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">📱</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <Smartphone className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">Mobile Optimized</h3>
               <p className="text-gray-600">
                 Perfect scanning experience on all devices.
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">⚡</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <Zap className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">Instant Generation</h3>
               <p className="text-gray-600">
                 Create QR codes in seconds, not minutes.
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">💾</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <Download className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">Bulk Export</h3>
               <p className="text-gray-600">
                 Download multiple QR codes at once.
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">🔗</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <LinkIcon className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">Multiple Formats</h3>
               <p className="text-gray-600">
                 Support for URLs, WiFi, vCards, and more.
               </p>
             </div>
             <div className="text-center p-6">
-              <div className="text-blue-600 text-4xl mb-4">🎯</div>
+              <div className="text-blue-600 mb-4 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-2xl mx-auto">
+                <Target className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold mb-2">High Resolution</h3>
               <p className="text-gray-600">
                 Crystal clear QR codes for print and digital.
@@ -506,8 +539,9 @@ export default function Features() {
 
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-              🚀 Ready to Start?
+            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+              <Rocket className="w-4 h-4" />
+              Ready to Start?
             </span>
           </div>
 
@@ -556,21 +590,21 @@ export default function Features() {
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
-                  <span className="text-xl">🐦</span>
+                  <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <span className="text-xl">💼</span>
+                  <Briefcase className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
-                  <span className="text-xl">⚡</span>
+                  <Zap className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -647,7 +681,7 @@ export default function Features() {
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <span className="text-gray-400 text-sm">Made with</span>
-              <span className="text-red-500 text-lg">❤️</span>
+              <Heart className="text-red-500 w-5 h-5 fill-current" />
               <span className="text-gray-400 text-sm">
                 for creators worldwide
               </span>
