@@ -320,7 +320,7 @@ export default function LandingPage() {
 
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+            <span className="inline-flex bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 items-center justify-center gap-2">
               <Sparkles className="w-4 h-4" />
               The #1 QR Code Generator
             </span>
@@ -470,7 +470,7 @@ export default function LandingPage() {
               <div className="space-y-3">
                 <Link
                   to={user ? "/dashboard" : "/signup"}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-center block text-base sm:text-lg flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-base sm:text-lg flex items-center justify-center gap-2"
                 >
                   {user ? (
                     <>

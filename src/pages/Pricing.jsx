@@ -354,7 +354,7 @@ export default function Pricing() {
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+            <span className="inline-flex bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 items-center justify-center gap-2">
               <DollarSign className="w-4 h-4" />
               Simple & Transparent
             </span>
@@ -692,7 +692,7 @@ export default function Pricing() {
 
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+            <span className="inline-flex bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 items-center justify-center gap-2">
               <Rocket className="w-4 h-4" />
               Ready to Start?
             </span>

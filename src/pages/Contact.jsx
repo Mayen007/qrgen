@@ -305,7 +305,7 @@ export default function Contact() {
 
         <div className="relative max-w-7xl mx-auto text-center">
           <div className="mb-8">
-            <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center justify-center gap-2">
+            <span className="inline-flex bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-6 items-center justify-center gap-2">
               <MessageSquare className="w-4 h-4" />
               We're Here to Help
             </span>
@@ -765,7 +765,7 @@ export default function Contact() {
       <section className="bg-gradient-to-br from-gray-50 to-blue-50 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center gap-2">
+            <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 flex items-center gap-2">
               <HelpCircle className="w-4 h-4" />
               Frequently Asked Questions
             </span>
