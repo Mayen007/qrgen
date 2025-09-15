@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import QRCode from "react-qr-code";
 import QRCodeLib from "qrcode";
 import Logo from "../components/Logo";
@@ -202,6 +203,21 @@ END:VCARD`;
     }
   };
 
+  const getQRCodeTitle = () => {
+    switch (qrType) {
+      case "url":
+        return qrData.substring(0, 50) || "URL QR Code";
+      case "wifi":
+        return `WiFi: ${wifiData.ssid}`;
+      case "contact":
+        return `Contact: ${contactData.name || contactData.email || "Unknown"}`;
+      case "text":
+        return qrData.substring(0, 50) || "Text QR Code";
+      default:
+        return "QR Code";
+    }
+  };
+
   const handleGenerate = async () => {
     clearMessages();
 
@@ -217,6 +233,26 @@ END:VCARD`;
 
       const value = generateQRValue();
       setQrValue(value);
+
+      // Store QR code metadata in Firestore
+      if (user) {
+        const qrCodeData = {
+          userId: user.uid,
+          type: qrType,
+          content: value,
+          title: getQRCodeTitle(),
+          settings: {
+            color: qrColor,
+            bgColor: qrBgColor,
+            size: qrSize,
+          },
+          createdAt: serverTimestamp(),
+          scanCount: 0,
+        };
+
+        await addDoc(collection(db, "qrcodes"), qrCodeData);
+      }
+
       setSuccessMessage("QR code generated successfully!");
 
       // Clear success message after 3 seconds
@@ -332,8 +368,15 @@ END:VCARD`;
                     to="/dashboard"
                     className="text-blue-600 font-medium transition-colors duration-200 relative group"
                   >
-                    Dashboard
+                    Generator
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-100 transition-transform duration-200"></span>
+                  </Link>
+                  <Link
+                    to="/analytics"
+                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                  >
+                    Analytics
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
                     {user.photoURL && (
@@ -454,7 +497,14 @@ END:VCARD`;
                   className="block text-blue-600 font-medium py-3 px-4 rounded-lg bg-blue-50 transition-all duration-200"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  Generator
+                </Link>
+                <Link
+                  to="/analytics"
+                  className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Analytics
                 </Link>
 
                 {/* User section */}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import QRCode from "react-qr-code";
 import Logo from "../components/Logo";
 import {
   Rocket,
@@ -24,6 +25,42 @@ export default function Features() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
+  // QR Preview Demo State
+  const [qrPreviewType, setQrPreviewType] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const qrDemoData = [
+    {
+      type: "URL",
+      value: "https://qrgen.app",
+      color: "#1e40af",
+      bgColor: "#ffffff",
+      description: "Website Link",
+    },
+    {
+      type: "Text",
+      value: "Hello! This is a sample text QR code.",
+      color: "#7c3aed",
+      bgColor: "#ffffff",
+      description: "Plain Text",
+    },
+    {
+      type: "WiFi",
+      value: "WIFI:T:WPA;S:MyNetwork;P:password123;;",
+      color: "#059669",
+      bgColor: "#ffffff",
+      description: "WiFi Network",
+    },
+    {
+      type: "Contact",
+      value:
+        "BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nORG:QRGen\nTEL:+1234567890\nEMAIL:john@qrgen.app\nEND:VCARD",
+      color: "#dc2626",
+      bgColor: "#ffffff",
+      description: "Contact Card",
+    },
+  ];
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -31,6 +68,19 @@ export default function Features() {
 
     return () => unsubscribe();
   }, []);
+
+  // Auto-cycle through QR demo types
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setQrPreviewType((prev) => (prev + 1) % qrDemoData.length);
+        setIsAnimating(false);
+      }, 150);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [qrDemoData.length]);
 
   const handleSignOut = async () => {
     try {
@@ -349,8 +399,57 @@ export default function Features() {
               </ul>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-48 h-48 bg-gray-200 mx-auto rounded-lg flex items-center justify-center">
-                <span className="text-gray-500">QR Preview</span>
+              <div className="text-center">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Live QR Preview
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-3">
+                    {qrDemoData[qrPreviewType].description}
+                  </p>
+                </div>
+
+                <div
+                  className={`transition-all duration-300 ${
+                    isAnimating
+                      ? "opacity-50 scale-95"
+                      : "opacity-100 scale-100"
+                  } mb-4`}
+                >
+                  <div className="w-48 h-48 mx-auto bg-white p-4 rounded-lg border-2 border-gray-100">
+                    <QRCode
+                      value={qrDemoData[qrPreviewType].value}
+                      size={176}
+                      fgColor={qrDemoData[qrPreviewType].color}
+                      bgColor={qrDemoData[qrPreviewType].bgColor}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-center gap-2 mb-3">
+                  {qrDemoData.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setIsAnimating(true);
+                        setTimeout(() => {
+                          setQrPreviewType(index);
+                          setIsAnimating(false);
+                        }, 150);
+                      }}
+                      className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                        index === qrPreviewType
+                          ? "bg-blue-600 scale-110"
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  {qrDemoData[qrPreviewType].type} • Auto-cycling demo
+                </p>
               </div>
             </div>
           </div>

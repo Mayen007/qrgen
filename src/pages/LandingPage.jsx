@@ -118,7 +118,14 @@ export default function LandingPage() {
                     to="/dashboard"
                     className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
                   >
-                    Dashboard
+                    Generator
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                  </Link>
+                  <Link
+                    to="/analytics"
+                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group"
+                  >
+                    Analytics
                     <span className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                   </Link>
                   <div className="flex items-center space-x-3">
@@ -258,7 +265,14 @@ export default function LandingPage() {
                     className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
                     onClick={() => setMenuOpen(false)}
                   >
-                    Dashboard
+                    Generator
+                  </Link>
+                  <Link
+                    to="/analytics"
+                    className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Analytics
                   </Link>
                   <div className="flex items-center space-x-3 py-3 px-4">
                     {user.photoURL && (
