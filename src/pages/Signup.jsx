@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleProvider } from "../firebase";
+import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
-  signInWithPopup,
 } from "firebase/auth";
+import {
+  handleGoogleAuth,
+  checkRedirectResult,
+  getAuthErrorMessage,
+} from "../utils/authUtils";
 import Logo from "../components/Logo";
 
 export default function Signup() {
@@ -20,6 +24,22 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check for redirect result from Google authentication
+    checkRedirectResult(
+      // Success callback
+      (user) => {
+        console.log("Google Sign-Up redirect successful:", user.displayName);
+        navigate("/dashboard");
+      },
+      // Error callback
+      (error) => {
+        console.error("Google Sign-Up redirect error:", error);
+        setError(getAuthErrorMessage(error));
+      }
+    );
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -96,54 +116,20 @@ export default function Signup() {
     setLoading(true);
     setError("");
 
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      // Check if this is a new user or existing user
-      const isNewUser = result._tokenResponse?.isNewUser;
-
-      if (isNewUser) {
-        // New user signed up with Google
-        console.log("New user signed up with Google:", user.displayName);
+    await handleGoogleAuth(
+      // Success callback
+      (user) => {
+        console.log("Google Sign-Up successful:", user.displayName);
         navigate("/dashboard");
-      } else {
-        // Existing user signed in with Google
-        console.log("Existing user signed in with Google:", user.displayName);
-        navigate("/dashboard");
+        setLoading(false);
+      },
+      // Error callback
+      (error) => {
+        console.error("Google Sign-Up error:", error);
+        setError(getAuthErrorMessage(error));
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Google Sign-Up error:", error);
-
-      // Handle specific Google auth errors
-      switch (error.code) {
-        case "auth/account-exists-with-different-credential":
-          setError(
-            "An account already exists with the same email address but different sign-in credentials."
-          );
-          break;
-        case "auth/popup-closed-by-user":
-          setError("Sign-up was cancelled. Please try again.");
-          break;
-        case "auth/popup-blocked":
-          setError(
-            "Pop-up was blocked by your browser. Please allow pop-ups and try again."
-          );
-          break;
-        case "auth/network-request-failed":
-          setError(
-            "Network error. Please check your connection and try again."
-          );
-          break;
-        case "auth/too-many-requests":
-          setError("Too many failed attempts. Please try again later.");
-          break;
-        default:
-          setError("Failed to sign up with Google. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   return (

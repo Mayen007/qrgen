@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { auth, googleProvider } from "../firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  handleGoogleAuth,
+  checkRedirectResult,
+  getAuthErrorMessage,
+} from "../utils/authUtils";
 import Logo from "../components/Logo";
 
 export default function Login() {
@@ -20,7 +25,21 @@ export default function Login() {
       // Clear the state to prevent message from persisting on refresh
       window.history.replaceState({}, document.title);
     }
-  }, [location]);
+
+    // Check for redirect result from Google authentication
+    checkRedirectResult(
+      // Success callback
+      (user) => {
+        console.log("Google Sign-In redirect successful:", user.displayName);
+        navigate("/dashboard");
+      },
+      // Error callback
+      (error) => {
+        console.error("Google Sign-In redirect error:", error);
+        setError(getAuthErrorMessage(error));
+      }
+    );
+  }, [location, navigate]);
 
   const getErrorMessage = (errorCode) => {
     switch (errorCode) {
@@ -64,40 +83,20 @@ export default function Login() {
     setError("");
     setSuccessMessage("");
 
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      // Successfully signed in with Google
-      console.log("Google Sign-In successful:", user.displayName);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Google Sign-In error:", error);
-
-      // Handle specific Google auth errors
-      switch (error.code) {
-        case "auth/popup-closed-by-user":
-          setError("Sign-in was cancelled. Please try again.");
-          break;
-        case "auth/popup-blocked":
-          setError(
-            "Pop-up was blocked by your browser. Please allow pop-ups and try again."
-          );
-          break;
-        case "auth/network-request-failed":
-          setError(
-            "Network error. Please check your connection and try again."
-          );
-          break;
-        case "auth/too-many-requests":
-          setError("Too many failed attempts. Please try again later.");
-          break;
-        default:
-          setError("Failed to sign in with Google. Please try again.");
+    await handleGoogleAuth(
+      // Success callback
+      (user) => {
+        console.log("Google Sign-In successful:", user.displayName);
+        navigate("/dashboard");
+        setLoading(false);
+      },
+      // Error callback
+      (error) => {
+        console.error("Google Sign-In error:", error);
+        setError(getAuthErrorMessage(error));
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   return (
