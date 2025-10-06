@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
+import useInactivityLogout from "./hooks/useInactivityLogout";
 import LandingPage from "./pages/LandingPage";
 import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
@@ -12,6 +13,7 @@ import Terms from "./pages/Terms";
 import Analytics from "./pages/Analytics";
 
 function App() {
+  useInactivityLogout(); // Site-wide inactivity logout
   return (
     <>
       <Routes>
