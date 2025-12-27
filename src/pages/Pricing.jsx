@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Logo from "../components/Logo";
@@ -13,13 +13,18 @@ import {
   Heart,
   User,
 } from "lucide-react";
+import { createCheckoutSession, STRIPE_PRICES } from "../utils/stripeUtils";
+import { useSubscription } from "../hooks/useSubscription";
 
 export default function Pricing() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const { effectiveTier } = useSubscription();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -35,6 +40,42 @@ export default function Pricing() {
       await signOut(auth);
     } catch (error) {
       console.error("Error signing out:", error);
+    }
+  };
+
+  const handlePlanSelection = async (plan) => {
+    // Free plan - just navigate to signup
+    if (plan.name === "Free") {
+      navigate("/signup");
+      return;
+    }
+
+    // Enterprise - navigate to contact
+    if (plan.name === "Enterprise") {
+      navigate("/contact");
+      return;
+    }
+
+    // Pro plan - check if user is authenticated
+    if (!user) {
+      navigate("/signup?plan=pro");
+      return;
+    }
+
+    // User is authenticated, initiate Stripe checkout
+    try {
+      setCheckoutLoading(plan.name);
+
+      const priceId = isAnnual
+        ? STRIPE_PRICES.pro_annual
+        : STRIPE_PRICES.pro_monthly;
+
+      await createCheckoutSession(priceId, "pro");
+    } catch (error) {
+      console.error("Error initiating checkout:", error);
+      alert("Failed to start checkout. Please try again or contact support.");
+    } finally {
+      setCheckoutLoading(null);
     }
   };
 
@@ -480,16 +521,28 @@ export default function Pricing() {
                       </p>
                     )}
                   </div>
-                  <Link
-                    to={plan.ctaLink}
-                    className={`w-full block text-center py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${
-                      plan.popular
+                  <button
+                    onClick={() => handlePlanSelection(plan)}
+                    disabled={
+                      checkoutLoading === plan.name ||
+                      effectiveTier === plan.name.toLowerCase()
+                    }
+                    className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${
+                      effectiveTier === plan.name.toLowerCase()
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : checkoutLoading === plan.name
+                        ? "bg-gray-400 cursor-wait"
+                        : plan.popular
                         ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg transform hover:scale-105"
                         : "bg-gray-900 text-white hover:bg-gray-800"
                     }`}
                   >
-                    {plan.cta}
-                  </Link>
+                    {effectiveTier === plan.name.toLowerCase()
+                      ? "Current Plan"
+                      : checkoutLoading === plan.name
+                      ? "Loading..."
+                      : plan.cta}
+                  </button>
                 </div>
 
                 <div className="space-y-4">

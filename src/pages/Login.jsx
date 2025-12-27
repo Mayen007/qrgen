@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   handleGoogleAuth,
   checkRedirectResult,
@@ -69,7 +70,39 @@ export default function Login() {
     setSuccessMessage("");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      // Check if user profile exists, create if not
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // Create user profile with 7-day Pro trial for first-time users
+        const trialEndsAt = new Date();
+        trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+
+        const monthlyResetDate = new Date();
+        monthlyResetDate.setMonth(monthlyResetDate.getMonth() + 1);
+        monthlyResetDate.setDate(1);
+        monthlyResetDate.setHours(0, 0, 0, 0);
+
+        await setDoc(userDocRef, {
+          email: userCredential.user.email,
+          displayName: userCredential.user.displayName || "",
+          tier: "free",
+          subscriptionStatus: "trialing",
+          trialEndsAt: trialEndsAt,
+          qrCodesThisMonth: 0,
+          monthlyResetDate: monthlyResetDate,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      }
+
       navigate("/dashboard");
     } catch (error) {
       setError(getErrorMessage(error.code));
@@ -85,8 +118,36 @@ export default function Login() {
 
     await handleGoogleAuth(
       // Success callback
-      (user) => {
+      async (user) => {
         console.log("Google Sign-In successful:", user.displayName);
+
+        // Check if user profile exists, create if not
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          // Create user profile with 7-day Pro trial for first-time Google OAuth users
+          const trialEndsAt = new Date();
+          trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+
+          const monthlyResetDate = new Date();
+          monthlyResetDate.setMonth(monthlyResetDate.getMonth() + 1);
+          monthlyResetDate.setDate(1);
+          monthlyResetDate.setHours(0, 0, 0, 0);
+
+          await setDoc(userDocRef, {
+            email: user.email,
+            displayName: user.displayName || "",
+            tier: "free",
+            subscriptionStatus: "trialing",
+            trialEndsAt: trialEndsAt,
+            qrCodesThisMonth: 0,
+            monthlyResetDate: monthlyResetDate,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          });
+        }
+
         navigate("/dashboard");
         setLoading(false);
       },

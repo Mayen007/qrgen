@@ -1,6 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper function to check if user is trying to modify protected fields
+    function isModifyingProtectedFields() {
+      let protectedFields = ['tier', 'subscriptionStatus', 'subscriptionId', 'customerId', 'trialEndsAt'];
+      // Only check on updates where resource already exists
+      return resource != null && request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedFields);
+    }
+    
+    // Users collection - profile and subscription data
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can create their own profile on signup
+      allow create: if request.auth != null && 
+                   request.auth.uid == userId;
+      
+      // Users can update their profile but NOT protected subscription fields
+      // Protected fields: tier, subscriptionStatus, subscriptionId, customerId, trialEndsAt
+      allow update: if request.auth != null && 
+                   request.auth.uid == userId &&
+                   !isModifyingProtectedFields();
+    }
+    
     // QR Codes collection - users can only access their own QR codes
     match /qrcodes/{qrCodeId} {
       allow read, write: if request.auth != null && 

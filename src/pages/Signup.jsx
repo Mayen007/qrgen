@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   signOut,
 } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   handleGoogleAuth,
   checkRedirectResult,
@@ -95,13 +96,35 @@ export default function Signup() {
         displayName: `${formData.firstName} ${formData.lastName}`,
       });
 
+      // Create user profile document with 7-day Pro trial
+      const trialEndsAt = new Date();
+      trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+
+      const monthlyResetDate = new Date();
+      monthlyResetDate.setMonth(monthlyResetDate.getMonth() + 1);
+      monthlyResetDate.setDate(1);
+      monthlyResetDate.setHours(0, 0, 0, 0);
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: formData.email,
+        displayName: `${formData.firstName} ${formData.lastName}`,
+        tier: "free", // Actual tier (will be free after trial)
+        subscriptionStatus: "trialing",
+        trialEndsAt: trialEndsAt,
+        qrCodesThisMonth: 0,
+        monthlyResetDate: monthlyResetDate,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
       // Sign out the user so they need to sign in manually
       await signOut(auth);
 
       // Redirect to login with success message
       navigate("/login", {
         state: {
-          message: "Account created successfully! Please sign in to continue.",
+          message:
+            "Account created successfully! You get 7 days of Pro trial. Please sign in to continue.",
           type: "success",
         },
       });

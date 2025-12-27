@@ -9,7 +9,13 @@
   command = "npm run build"
 
 [[redirects]]
-  # Redirect all routes to index.html for client-side routing
+  # Don't redirect static assets
+  from = "/src/*"
+  to = "/src/:splat"
+  status = 200
+
+[[redirects]]
+  # Redirect all other routes to index.html for client-side routing
   from = "/*"
   to = "/index.html"
   status = 200
@@ -18,7 +24,31 @@
   # Set Node.js version
   NODE_VERSION = "20"
 
+[functions]
+  # Directory for serverless functions
+  directory = "netlify/functions"
+  # Node.js version for functions
+  node_bundler = "esbuild"
+
+[dev]
+  # Local development settings
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  publish = "dist"
+  autoLaunch = false
+  # Framework detection
+  framework = "vite"
+
 # Headers for better caching and security
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, Accept"
+    Access-Control-Max-Age = "86400"
+
 [[headers]]
   for = "/*.js"
   [headers.values]
@@ -43,3 +73,4 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cross-Origin-Resource-Policy = "cross-origin"
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
+    Content-Security-Policy = "default-src 'self' http://localhost:* ws://localhost:* wss://localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' http://localhost:* ws://localhost:* wss://localhost:* https://*.stripe.com https://*.firebase.googleapis.com https://*.firebaseio.com https://*.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://apis.google.com; frame-src https://js.stripe.com https://*.firebaseapp.com"

@@ -11,11 +11,12 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Analytics from "./pages/Analytics";
+import { SubscriptionProvider } from "./context/SubscriptionContext";
 
 function App() {
   useInactivityLogout(); // Site-wide inactivity logout
   return (
-    <>
+    <SubscriptionProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -28,7 +29,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
       </Routes>
-    </>
+    </SubscriptionProvider>
   );
 }
 

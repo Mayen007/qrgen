@@ -1,0 +1,10 @@
+{
+  "name": "qrgen-netlify-functions",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Netlify Functions for QRGen subscription system",
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "firebase-admin": "^12.0.0"
+  }
+}

@@ -35,7 +35,9 @@ import {
   Download,
   Filter,
   RefreshCw,
+  Lock,
 } from "lucide-react";
+import { useSubscription } from "../hooks/useSubscription";
 
 export default function Analytics() {
   const navigate = useNavigate();
@@ -55,6 +57,9 @@ export default function Analytics() {
   });
   const [dateRange, setDateRange] = useState(7); // Last 7 days
   const [refreshing, setRefreshing] = useState(false);
+
+  // Subscription context for feature gating
+  const { hasFeature } = useSubscription();
 
   const fetchAnalyticsData = useCallback(
     async (userId) => {
@@ -560,8 +565,45 @@ export default function Analytics() {
           </div>
         </div>
 
+        {/* Feature Gate Overlay for Free Tier */}
+        {!hasFeature("analytics") && (
+          <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 border-2 border-blue-200 relative overflow-hidden">
+            <div className="absolute top-4 right-4">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                PRO FEATURE
+              </div>
+            </div>
+            <div className="flex items-start space-x-4">
+              <div className="p-3 bg-white rounded-lg shadow-md">
+                <Lock className="w-8 h-8 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Advanced Analytics Available on Pro Plan
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Get detailed insights into your QR code performance including
+                  scan trends, device analytics, geographic data, and more.
+                </p>
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105"
+                >
+                  Upgrade to Pro
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 ${
+            !hasFeature("analytics")
+              ? "opacity-50 pointer-events-none blur-sm"
+              : ""
+          }`}
+        >
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center">
               <div className="p-3 bg-blue-100 rounded-lg">

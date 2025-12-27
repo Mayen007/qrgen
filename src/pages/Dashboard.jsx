@@ -2,11 +2,29 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 import QRCode from "react-qr-code";
 import QRCodeLib from "qrcode";
 import Logo from "../components/Logo";
-import { Globe, FileText, Wifi, User, Palette, Download } from "lucide-react";
+import {
+  Globe,
+  FileText,
+  Wifi,
+  User,
+  Palette,
+  Download,
+  Sparkles,
+  X,
+  Lock,
+} from "lucide-react";
+import { useSubscription } from "../hooks/useSubscription";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -33,7 +51,19 @@ export default function Dashboard() {
   const [errors, setErrors] = useState({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showTrialBanner, setShowTrialBanner] = useState(true);
   const canvasRef = useRef();
+
+  // Subscription context
+  const {
+    userProfile,
+    isTrialActive,
+    trialDaysRemaining,
+    canGenerateQR,
+    qrCodesRemaining,
+    effectiveTier,
+  } = useSubscription();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -225,6 +255,18 @@ END:VCARD`;
       return;
     }
 
+    // Check usage limits before generating
+    if (!canGenerateQR) {
+      setShowUpgradeModal(true);
+      setErrors({
+        general:
+          effectiveTier === "free"
+            ? "You've reached your monthly limit of 5 QR codes. Upgrade to Pro for unlimited QR codes!"
+            : "Unable to generate QR code. Please check your subscription status.",
+      });
+      return;
+    }
+
     setIsGenerating(true);
 
     try {
@@ -235,7 +277,7 @@ END:VCARD`;
       setQrValue(value);
 
       // Store QR code metadata in Firestore
-      if (user) {
+      if (user && userProfile) {
         const qrCodeData = {
           userId: user.uid,
           type: qrType,
@@ -251,6 +293,13 @@ END:VCARD`;
         };
 
         await addDoc(collection(db, "qrcodes"), qrCodeData);
+
+        // Increment monthly QR code count
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          qrCodesThisMonth: increment(1),
+          updatedAt: serverTimestamp(),
+        });
       }
 
       setSuccessMessage("QR code generated successfully!");
@@ -539,6 +588,133 @@ END:VCARD`;
           </div>
         )}
       </header>
+
+      {/* Trial Banner */}
+      {isTrialActive && showTrialBanner && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 relative">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-5 h-5" />
+              <span className="font-medium">
+                {trialDaysRemaining === 1
+                  ? "Last day of your Pro trial!"
+                  : `${trialDaysRemaining} days left in your Pro trial`}
+              </span>
+              <span className="hidden sm:inline text-blue-100">
+                • Enjoying unlimited QR codes and premium features
+              </span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Link
+                to="/pricing"
+                className="bg-white text-blue-600 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors"
+              >
+                Upgrade Now
+              </Link>
+              <button
+                onClick={() => setShowTrialBanner(false)}
+                className="text-white hover:text-blue-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Usage Stats Banner for Free Tier */}
+      {!isTrialActive && effectiveTier === "free" && (
+        <div className="bg-gray-100 border-b border-gray-200 py-3 px-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-700 font-medium">
+                {qrCodesRemaining > 0
+                  ? `${qrCodesRemaining} QR code${
+                      qrCodesRemaining !== 1 ? "s" : ""
+                    } remaining this month`
+                  : "Monthly limit reached"}
+              </span>
+              {qrCodesRemaining === 0 && (
+                <span className="text-red-600 text-sm">
+                  • Upgrade to continue creating QR codes
+                </span>
+              )}
+            </div>
+            <Link
+              to="/pricing"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all"
+            >
+              Upgrade to Pro
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 relative animate-scale-in">
+            <button
+              onClick={() => setShowUpgradeModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Upgrade to Continue
+              </h2>
+              <p className="text-gray-600">
+                You've reached your monthly limit of 5 QR codes on the Free
+                plan.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-3">
+                Pro Plan Benefits:
+              </h3>
+              <ul className="space-y-2">
+                <li className="flex items-center text-gray-700">
+                  <span className="text-green-500 mr-2">✓</span>
+                  Unlimited QR codes
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="text-green-500 mr-2">✓</span>
+                  High-resolution exports
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="text-green-500 mr-2">✓</span>
+                  Advanced analytics
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <span className="text-green-500 mr-2">✓</span>
+                  Priority support
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <Link
+                to="/pricing"
+                className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105"
+              >
+                View Pricing Plans
+              </Link>
+              <button
+                onClick={() => setShowUpgradeModal(false)}
+                className="block w-full bg-gray-100 text-gray-700 text-center py-3 px-6 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -885,9 +1061,20 @@ END:VCARD`;
 
             {/* Customization Options */}
             <div className="mb-6 space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Customization
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Customization
+                </h3>
+                {effectiveTier === "free" && (
+                  <Link
+                    to="/pricing"
+                    className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center"
+                  >
+                    <Lock className="w-3 h-3 mr-1" />
+                    Upgrade for High-Res
+                  </Link>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -912,18 +1099,29 @@ END:VCARD`;
                   />
                 </div>
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Size: {qrSize}px
+                  {effectiveTier === "free" && qrSize > 256 && (
+                    <span className="text-orange-600 text-xs ml-2">
+                      (Capped at 256px on Free plan)
+                    </span>
+                  )}
                 </label>
                 <input
                   type="range"
                   min="128"
-                  max="512"
-                  value={qrSize}
+                  max={effectiveTier === "free" ? "256" : "512"}
+                  value={Math.min(qrSize, effectiveTier === "free" ? 256 : 512)}
                   onChange={(e) => setQrSize(Number(e.target.value))}
                   className="w-full"
                 />
+                {effectiveTier === "free" && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Free plan limited to 256px. Upgrade to Pro for up to 512px
+                    high-resolution exports.
+                  </p>
+                )}
               </div>
             </div>
 
